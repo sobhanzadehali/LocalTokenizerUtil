@@ -1,19 +1,7 @@
 from abc import ABC, abstractmethod
 
-from transformers import AutoTokenizer
 
-
-class BaseTokenizer(ABC):
-    """
-    Abstract base class for tokenizers. all tokenizers should inherit from this class.
-    """
-
+class BaseTokenizerFactory(ABC):
     @abstractmethod
-    def encode(self, text: str) -> list[int]:
+    def get_tokenizer(self, name_or_path: str):
         pass
-
-    @abstractmethod
-    def decode(self, tokens: list[int]) -> str:
-        pass
-
-
