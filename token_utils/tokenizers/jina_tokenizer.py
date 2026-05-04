@@ -1,6 +1,6 @@
 import os
-from token_utils.tokenizers.hf_tokenizer import HFTokenizer
-from token_utils.registry import TokenizerRegistry
+from .hf_tokenizer import HFTokenizer
+from ..registry import TokenizerRegistry
 
 
 class JinaTokenizer(HFTokenizer):
