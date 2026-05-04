@@ -1,6 +1,6 @@
 from typing import List
-from base import BaseTokenizer
-from chunkers.base_chunker import BaseChunker
+from token_utils.base import BaseTokenizer
+from token_utils.chunkers.base_chunker import BaseChunker
 
 
 class TokenChunker(BaseChunker):

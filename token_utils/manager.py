@@ -1,5 +1,5 @@
-from factory import create_tokenizer
-from chunkers.token_chunker import TokenChunker
+from token_utils.factory import create_tokenizer
+from token_utils.chunkers.token_chunker import TokenChunker
 
 
 class TokenizationManager:

@@ -1,4 +1,4 @@
-from registry import TokenizerRegistry
+from token_utils.registry import TokenizerRegistry
 
 
 def create_tokenizer(name: str):

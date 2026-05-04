@@ -1,7 +1,7 @@
 import os
 from transformers import AutoTokenizer
-from base import BaseTokenizer
-from registry import TokenizerRegistry
+from token_utils.base import BaseTokenizer
+from token_utils.registry import TokenizerRegistry
 
 
 class HFTokenizer(BaseTokenizer):
