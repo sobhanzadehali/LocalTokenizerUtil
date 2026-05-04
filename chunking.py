@@ -1,5 +1,4 @@
-from .tokenizer.base import BaseTokenizer
-
+from src.token_utils .base
 
 class Chunker:
     def __init__(self, tokenizer: BaseTokenizer) -> None:
