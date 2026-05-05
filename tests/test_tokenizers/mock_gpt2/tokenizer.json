@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "BPE",
+    "vocab_size": 1000,
+    "unk_token": "<unk>",
+    "bos_token": "<s>",
+    "eos_token": "</s>",
+    "pad_token": "<pad>"
+  },
+  "pre_tokenizer": {
+    "type": "Whitespace"
+  },
+  "normalizer": {
+    "type": "NFC"
+  }
+}

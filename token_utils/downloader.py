@@ -73,8 +73,12 @@ class TokenizerDownloader:
         if 'content-disposition' in response.headers:
             content_disp = response.headers['content-disposition']
             if 'filename=' in content_disp:
-                filename = content_disp.split('filename=')[1].strip('"\'')
-                return filename
+                # More robust filename extraction
+                import re
+                filename_match = re.search(r'filename[^;=\n]*=(([\'"]).*?\2|[^;\n]*)', content_disp)
+                if filename_match:
+                    filename = filename_match.group(1).strip('"\'' '')
+                    return filename
 
         # Fallback to URL basename
         from urllib.parse import urlparse

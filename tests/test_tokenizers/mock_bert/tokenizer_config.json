@@ -1,0 +1,7 @@
+{
+  "model_type": "gpt2",
+  "unk_token": "<unk>",
+  "bos_token": "<s>",
+  "eos_token": "</s>",
+  "pad_token": "<pad>"
+}

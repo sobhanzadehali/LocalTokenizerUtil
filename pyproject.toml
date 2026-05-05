@@ -1,6 +1,6 @@
 [project]
 name = "token-utils"
-version = "0.2.0"
+version = "0.3.1"
 authors = [
     { name = "sobhan", email = "sobhan@example.com" }
 ]
@@ -24,6 +24,12 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Text Processing",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
 ]
 [build-system]
 requires = ["hatchling >= 1.26"]

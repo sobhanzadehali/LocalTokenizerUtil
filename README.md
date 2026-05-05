@@ -176,6 +176,70 @@ The auto-detection searches in these locations by default:
 - transformers >= 5.7.0
 - requests >= 2.25.0
 
+## Development and Testing
+
+### Running Tests
+
+Install test dependencies:
+```bash
+pip install -e .[test]
+```
+
+Run the test suite:
+```bash
+pytest tests/
+```
+
+### Test Structure
+
+The test suite includes:
+- **Unit tests** for individual components (downloader, manager, etc.)
+- **Integration tests** with mock tokenizers
+- **Configuration tests** for loading settings from files
+- **Auto-detection tests** for finding tokenizers on the system
+
+### Creating Test Tokenizers
+
+For development and testing, you can create mock tokenizers:
+```bash
+python tests/create_mock_tokenizers.py
+```
+
+This creates minimal tokenizer configurations for testing purposes.
+
+### Testing with Real Tokenizers
+
+The package has been tested with real tokenizers downloaded from Hugging Face:
+
+```bash
+# Download and test GPT-2 tokenizer
+python -c "
+import requests
+from pathlib import Path
+import os
+
+# Download GPT-2 tokenizer files
+tokenizer_dir = Path('/tmp/real_gpt2')
+tokenizer_dir.mkdir(exist_ok=True)
+
+files = ['tokenizer.json', 'vocab.json', 'merges.txt', 'tokenizer_config.json']
+base_url = 'https://huggingface.co/gpt2/resolve/main/'
+
+for file in files:
+    response = requests.get(base_url + file)
+    with open(tokenizer_dir / file, 'wb') as f:
+        f.write(response.content)
+
+# Use with token-utils
+from token_utils import TokenizationManager
+manager = TokenizationManager('gpt2', model_path=str(tokenizer_dir))
+tokens = manager.tokenize('Hello world!')
+print(f'Tokens: {tokens}')
+"
+```
+
+The package successfully works with real Hugging Face tokenizers including GPT-2, DistilBERT, and others.
+
 ## License
 
 MIT
