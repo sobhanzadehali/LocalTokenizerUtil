@@ -1,14 +1,29 @@
 [project]
 name = "token-utils"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
-    { name = "sobhan", email = "sobhan@local.com" }
+    { name = "sobhan", email = "sobhan@example.com" }
 ]
 description = "A utility library for tokenization"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = [
     "transformers>=5.7.0",
+    "requests>=2.25.0",
+]
+keywords = ["tokenization", "nlp", "transformers", "text-processing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing",
 ]
 [build-system]
 requires = ["hatchling >= 1.26"]

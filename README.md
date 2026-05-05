@@ -18,13 +18,40 @@ pip install .
 
 ## Usage
 
+### Downloading Tokenizers
+
+You can download tokenizers from URLs programmatically or from a configuration file:
+
+```python
+from token_utils import TokenizerDownloader
+
+# Create downloader instance
+downloader = TokenizerDownloader()
+
+# Download a specific tokenizer
+downloader.set_config({"my_tokenizer": "https://example.com/tokenizer.zip"})
+path = downloader.download_tokenizer("my_tokenizer")
+
+# Or download from a config file (txt or json)
+downloader.download_from_file("tokenizers.txt")
+```
+
+Config file format (tokenizers.txt):
+```
+my_tokenizer = https://example.com/tokenizer.zip
+another_tokenizer = https://huggingface.co/user/model/resolve/main/tokenizer.json
+```
+
 ### Basic Tokenization
 
 ```python
 from token_utils import TokenizationManager
 
-# Initialize the manager with a tokenizer name (must be registered)
+# Initialize with a registered tokenizer name
 manager = TokenizationManager("hf")  # or "jina"
+
+# Or use a custom downloaded tokenizer by path
+manager = TokenizationManager("qwen", model_path="/path/to/downloaded/qwen/tokenizer")
 
 # Tokenize text
 tokens = manager.tokenize("Hello world")
@@ -51,15 +78,22 @@ print(chunks)  # Output: list of text chunks
 
 The package includes two tokenizer implementations by default:
 
-1. **HFTokenizer**: For Hugging Face tokenizers (requires local files)
-2. **JinaTokenizer**: Specifically for Jina tokenizers (extends HFTokenizer)
-
-To use a tokenizer, you must have the tokenizer files available locally and set the `TOKENIZER_DIR` environment variable to point to the directory containing your tokenizers.
+1. **HFTokenizer**: For Hugging Face tokenizers (can download automatically)
+2. **JinaTokenizer**: Specifically for Jina tokenizers (extends HFTokenizer, can download automatically)
 
 ### Setting up Tokenizers
 
-1. Download your tokenizer files (from Hugging Face or Jina) and place them in a directory.
-2. Set the environment variable `TOKENIZER_DIR` to the path of that directory.
+You can either:
+
+1. **Manual setup**: Download tokenizer files and set `TOKENIZER_DIR` environment variable
+2. **Automatic download**: Configure URLs and let the library download them
+
+#### Manual Setup
+
+Download your tokenizer files and place them in a directory, then set:
+```bash
+export TOKENIZER_DIR=/path/to/tokenizers
+```
 
 Example directory structure:
 ```
@@ -78,15 +112,69 @@ Example directory structure:
     └── special_tokens_map.json
 ```
 
-Then set:
-```bash
-export TOKENIZER_DIR=/path/to/tokenizers
+#### Automatic Download
+
+For built-in tokenizers like "jina", URLs are pre-configured. For custom tokenizers, set URLs programmatically:
+
+```python
+from token_utils import TokenizerDownloader
+
+downloader = TokenizerDownloader()
+downloader.set_config({"my_model": "https://huggingface.co/user/model/resolve/main/"})
+# Then use TokenizationManager("my_model") - it will download automatically
 ```
+
+**Note**: URLs should point to complete tokenizer directories or downloadable archives. Single files like `tokenizer.json` may not be sufficient for all tokenizers.
+
+Downloaded tokenizers are stored in the `TOKENIZER_DIR` directory (defaults to `/app/tokenizers`).
+
+### Using Already Downloaded Tokenizers
+
+If you have already downloaded a tokenizer (like Qwen) but don't know the exact path, the library can help you find and use it:
+
+1. **Auto-detection**: The library will automatically search for tokenizers in common locations:
+   ```python
+   from token_utils import TokenizationManager
+
+   # Will automatically find and use the tokenizer
+   manager = TokenizationManager("qwen")
+   ```
+
+2. **Find available tokenizers**: Discover what tokenizers are available on your system:
+   ```python
+   from token_utils import find_available_tokenizers
+
+   available = find_available_tokenizers()
+   print("Found tokenizers:", available)
+   # Output: {'qwen': '/home/user/models/qwen', 'bert': '/home/user/.cache/huggingface/tokenizers/bert'}
+   ```
+
+3. **Specify path directly** (if auto-detection doesn't work):
+   ```python
+   manager = TokenizationManager("qwen", model_path="/path/to/downloaded/qwen")
+   ```
+
+4. **Set TOKENIZER_DIR**: For organized storage:
+   ```bash
+   export TOKENIZER_DIR=/path/to/my/tokenizers
+   # Place Qwen tokenizer in /path/to/my/tokenizers/qwen/
+   ```
+   Then use:
+   ```python
+   manager = TokenizationManager("qwen")
+   ```
+
+The auto-detection searches in these locations by default:
+- `$TOKENIZER_DIR` (your configured tokenizer directory)
+- `~/.cache/huggingface/tokenizers` (Hugging Face cache)
+- `~/models` and `~/tokenizers` (common user directories)
+- `/opt/tokenizers` and `/usr/local/tokenizers` (system directories)
 
 ## Requirements
 
-- Python >= 3.13
+- Python >= 3.10
 - transformers >= 5.7.0
+- requests >= 2.25.0
 
 ## License
 
