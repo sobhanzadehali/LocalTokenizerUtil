@@ -8,7 +8,7 @@ class JinaTokenizer(HFTokenizer):
         if model_path is None:
             base_dir = os.getenv("TOKENIZER_DIR", "/app/tokenizers")
             model_path = os.path.join(base_dir, "jina")
-        super().__init__(model_path=model_path)
+        super().__init__(model_path=model_path, fix_mistral_regex=True)
 
 
 TokenizerRegistry.register("jina", JinaTokenizer)

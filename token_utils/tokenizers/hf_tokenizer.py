@@ -5,13 +5,14 @@ from ..registry import TokenizerRegistry
 
 
 class HFTokenizer(BaseTokenizer):
-    def __init__(self, model_path: str):
+    def __init__(self, model_path: str, **kwargs):
         if not os.path.exists(model_path):
             raise ValueError(f"Tokenizer path does not exist: {model_path}")
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_path,
-            local_files_only=True
+            local_files_only=True,
+            **kwargs
         )
 
     def encode(self, text: str):

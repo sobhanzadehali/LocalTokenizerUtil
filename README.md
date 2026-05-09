@@ -1,46 +1,37 @@
 # token-utils
 
-A utility library for tokenization that allows you to use pre-downloaded tokenizers (like Hugging Face or Jina) for tokenizing and chunking text.
+A comprehensive utility library for tokenization that allows you to use pre-downloaded tokenizers (like Hugging Face or Jina) for tokenizing, counting tokens, and chunking text.
+
+## Features
+
+- **Multiple Tokenizer Support**: Built-in support for Hugging Face and Jina tokenizers
+- **Automatic Tokenizer Discovery**: Automatically finds tokenizers in common locations
+- **Flexible Configuration**: Download tokenizers programmatically or from config files
+- **Text Chunking**: Split text into chunks with configurable overlap
+- **Token Counting**: Accurately count tokens in text
+- **Environment Variable Configuration**: Customize tokenizer storage location
 
 ## Installation
 
-You can install the package via pip:
+Install the package via pip:
 
 ```bash
 pip install token-utils
 ```
 
-Or from the local source:
+Or install from local source:
 
 ```bash
 pip install .
 ```
 
-## Usage
+For development installation with test dependencies:
 
-### Downloading Tokenizers
-
-You can download tokenizers from URLs programmatically or from a configuration file:
-
-```python
-from token_utils import TokenizerDownloader
-
-# Create downloader instance
-downloader = TokenizerDownloader()
-
-# Download a specific tokenizer
-downloader.set_config({"my_tokenizer": "https://example.com/tokenizer.zip"})
-path = downloader.download_tokenizer("my_tokenizer")
-
-# Or download from a config file (txt or json)
-downloader.download_from_file("tokenizers.txt")
+```bash
+pip install -e .[test]
 ```
 
-Config file format (tokenizers.txt):
-```
-my_tokenizer = https://example.com/tokenizer.zip
-another_tokenizer = https://huggingface.co/user/model/resolve/main/tokenizer.json
-```
+## Quick Start
 
 ### Basic Tokenization
 
@@ -50,8 +41,9 @@ from token_utils import TokenizationManager
 # Initialize with a registered tokenizer name
 manager = TokenizationManager("hf")  # or "jina"
 
-# Or use a custom downloaded tokenizer by path
-manager = TokenizationManager("qwen", model_path="/path/to/downloaded/qwen/tokenizer")
+# Or use a custom downloaded tokenizer by providing the path to the tokenizer directory
+# The path should point to the directory containing tokenizer.json, config.json, vocab.json, etc.
+manager = TokenizationManager("qwen", model_path="/path/to/downloaded/qwen/")
 
 # Tokenize text
 tokens = manager.tokenize("Hello world")
@@ -74,6 +66,52 @@ chunks = manager.chunk_text("Your long text here...", chunk_size=50, overlap=10)
 print(chunks)  # Output: list of text chunks
 ```
 
+### Finding Available Tokenizers
+
+```python
+from token_utils import find_available_tokenizers
+
+# Discover what tokenizers are available on your system
+available = find_available_tokenizers()
+print("Found tokenizers:", available)
+# Output: {'qwen': '/home/user/models/qwen', 'bert': '/home/user/.cache/huggingface/tokenizers/bert'}
+```
+
+## Core Components
+
+### TokenizationManager
+
+Main interface for tokenization operations:
+
+```python
+TokenizationManager(tokenizer_name: str, model_path: str = None)
+```
+
+Parameters:
+- `tokenizer_name`: Name of the tokenizer ("hf", "jina", or custom name)
+- `model_path`: Optional explicit path to tokenizer directory (should contain tokenizer.json, config.json, vocab.json, etc.)
+
+Methods:
+- `tokenize(text: str) -> list[int]`: Convert text to token IDs
+- `count_tokens(text: str) -> int`: Count tokens in text
+- `chunk_text(text: str, chunk_size: int, overlap: int = 0) -> list[str]`: Split text into chunks
+
+### TokenizerDownloader
+
+Handles downloading and managing tokenizer files:
+
+```python
+TokenizerDownloader()
+```
+
+Methods:
+- `set_config(config: dict)`: Set tokenizer download configurations
+- `download_tokenizer(name: str) -> str`: Download a specific tokenizer
+- `download_from_file(file_path: str)`: Download tokenizers from config file
+- `find_tokenizers_on_system(search_paths: list) -> dict`: Find tokenizers on filesystem
+- `auto_detect_tokenizer(name: str) -> str`: Auto-detect tokenizer location
+- `get_tokenizer_path(name: str) -> str`: Get path for tokenizer (downloads if needed)
+
 ## Available Tokenizers
 
 The package includes two tokenizer implementations by default:
@@ -81,16 +119,19 @@ The package includes two tokenizer implementations by default:
 1. **HFTokenizer**: For Hugging Face tokenizers (can download automatically)
 2. **JinaTokenizer**: Specifically for Jina tokenizers (extends HFTokenizer, can download automatically)
 
-### Setting up Tokenizers
+Both tokenizers extend the base `BaseTokenizer` abstract class.
+
+## Setting Up Tokenizers
 
 You can either:
 
 1. **Manual setup**: Download tokenizer files and set `TOKENIZER_DIR` environment variable
 2. **Automatic download**: Configure URLs and let the library download them
 
-#### Manual Setup
+### Manual Setup
 
 Download your tokenizer files and place them in a directory, then set:
+
 ```bash
 export TOKENIZER_DIR=/path/to/tokenizers
 ```
@@ -112,7 +153,7 @@ Example directory structure:
     └── special_tokens_map.json
 ```
 
-#### Automatic Download
+### Automatic Download
 
 For built-in tokenizers like "jina", URLs are pre-configured. For custom tokenizers, set URLs programmatically:
 
@@ -130,7 +171,7 @@ Downloaded tokenizers are stored in the `TOKENIZER_DIR` directory (defaults to `
 
 ### Using Already Downloaded Tokenizers
 
-If you have already downloaded a tokenizer (like Qwen) but don't know the exact path, the library can help you find and use it:
+If you have already downloaded a tokenizer but don't know the exact path, the library can help you find and use it:
 
 1. **Auto-detection**: The library will automatically search for tokenizers in common locations:
    ```python
@@ -146,13 +187,12 @@ If you have already downloaded a tokenizer (like Qwen) but don't know the exact 
 
    available = find_available_tokenizers()
    print("Found tokenizers:", available)
-   # Output: {'qwen': '/home/user/models/qwen', 'bert': '/home/user/.cache/huggingface/tokenizers/bert'}
    ```
 
 3. **Specify path directly** (if auto-detection doesn't work):
-   ```python
-   manager = TokenizationManager("qwen", model_path="/path/to/downloaded/qwen")
-   ```
+    ```python
+    manager = TokenizationManager("qwen", model_path="/path/to/downloaded/qwen/")
+    ```
 
 4. **Set TOKENIZER_DIR**: For organized storage:
    ```bash
@@ -170,10 +210,59 @@ The auto-detection searches in these locations by default:
 - `~/models` and `~/tokenizers` (common user directories)
 - `/opt/tokenizers` and `/usr/local/tokenizers` (system directories)
 
+## Configuration File Format
+
+Config files can be either `.txt` or `.json` format:
+
+### TXT Format (`tokenizers.txt`):
+```
+my_tokenizer = https://example.com/tokenizer.zip
+another_tokenizer = https://huggingface.co/user/model/resolve/main/tokenizer.json
+```
+
+### JSON Format (`tokenizers.json`):
+```json
+{
+  "my_tokenizer": "https://example.com/tokenizer.zip",
+  "another_tokenizer": "https://huggingface.co/user/model/resolve/main/tokenizer.json"
+}
+```
+
+## API Reference
+
+### TokenizationManager
+
+```python
+class TokenizationManager:
+    def __init__(self, tokenizer_name: str, model_path: str = None)
+    def tokenize(self, text: str) -> list[int]
+    def count_tokens(self, text: str) -> int
+    def chunk_text(self, text: str, chunk_size: int, overlap: int = 0) -> list[str]
+```
+
+### TokenizerDownloader
+
+```python
+class TokenizerDownloader:
+    def __init__(self)
+    def set_config(self, config: dict) -> None
+    def download_tokenizer(self, name: str) -> str
+    def download_from_file(self, file_path: str) -> None
+    def find_tokenizers_on_system(self, search_paths: list = None) -> dict
+    def auto_detect_tokenizer(self, name: str) -> str
+    def get_tokenizer_path(self, name: str) -> str
+```
+
+### Utility Functions
+
+```python
+def find_available_tokenizers(search_paths: list = None) -> dict
+```
+
 ## Requirements
 
 - Python >= 3.10
-- transformers >= 5.7.0
+- transformers >= 4.0.0
 - requests >= 2.25.0
 
 ## Development and Testing
@@ -210,7 +299,6 @@ This creates minimal tokenizer configurations for testing purposes.
 ### Testing with Real Tokenizers
 
 The package has been tested with real tokenizers downloaded from Hugging Face:
-
 ```bash
 # Download and test GPT-2 tokenizer
 python -c "
@@ -243,3 +331,13 @@ The package successfully works with real Hugging Face tokenizers including GPT-2
 ## License
 
 MIT
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
