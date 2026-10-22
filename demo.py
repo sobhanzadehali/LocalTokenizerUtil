@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Comprehensive demonstration of token-utils package functionality.
+Comprehensive demonstration of local-token-utils package functionality.
 This shows how a programmer would use the package in practice.
 """
 
 import os
 import tempfile
 from pathlib import Path
-from token_utils import TokenizationManager, TokenizerDownloader, find_available_tokenizers
+from local_token_utils import TokenizationManager, TokenizerDownloader, find_available_tokenizers
 
 
 def demonstrate_core_functionality():
@@ -103,7 +103,7 @@ def demonstrate_core_functionality():
     print("5. 💡 Practical Usage Patterns")
     print("""
 # Pattern 1: Auto-discovery
-from token_utils import TokenizationManager, find_available_tokenizers
+from local_token_utils import TokenizationManager, find_available_tokenizers
 
 # Find what tokenizers are available
 available = find_available_tokenizers()
@@ -116,7 +116,7 @@ manager = TokenizationManager("qwen")  # Assumes URL configured
 manager = TokenizationManager("custom", model_path="/path/to/downloaded/qwen")
 
 # Pattern 3: Batch download from config
-from token_utils import TokenizerDownloader
+from local_token_utils import TokenizerDownloader
 
 downloader = TokenizerDownloader()
 downloader.download_from_file("my_tokenizers.txt")
@@ -126,7 +126,7 @@ manager = TokenizationManager("downloaded_tokenizer")
 """)
 
     print("🎉 Demonstration Complete!")
-    print("\nThe token-utils package provides:")
+    print("\nThe local-token-utils package provides:")
     print("✓ Automatic tokenizer downloading from URLs")
     print("✓ Smart discovery of existing tokenizers")
     print("✓ Flexible configuration (dict, files, environment)")

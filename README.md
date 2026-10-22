@@ -1,4 +1,4 @@
-# token-utils
+# local-token-utils
 
 A comprehensive utility library for tokenization that allows you to use pre-downloaded tokenizers (like Hugging Face or Jina) for tokenizing, counting tokens, and chunking text.
 
@@ -16,7 +16,7 @@ A comprehensive utility library for tokenization that allows you to use pre-down
 Install the package via pip:
 
 ```bash
-pip install token-utils
+pip install local-token-utils
 ```
 
 Or install from local source:
@@ -36,7 +36,7 @@ pip install -e .[test]
 ### Basic Tokenization
 
 ```python
-from token_utils import TokenizationManager
+from local_token_utils import TokenizationManager
 
 # Initialize with a registered tokenizer name
 manager = TokenizationManager("hf")  # or "jina"
@@ -57,7 +57,7 @@ print(count)  # Output: 2
 ### Text Chunking
 
 ```python
-from token_utils import TokenizationManager
+from local_token_utils import TokenizationManager
 
 manager = TokenizationManager("hf")
 
@@ -69,7 +69,7 @@ print(chunks)  # Output: list of text chunks
 ### Finding Available Tokenizers
 
 ```python
-from token_utils import find_available_tokenizers
+from local_token_utils import find_available_tokenizers
 
 # Discover what tokenizers are available on your system
 available = find_available_tokenizers()
@@ -158,7 +158,7 @@ Example directory structure:
 For built-in tokenizers like "jina", URLs are pre-configured. For custom tokenizers, set URLs programmatically:
 
 ```python
-from token_utils import TokenizerDownloader
+from local_token_utils import TokenizerDownloader
 
 downloader = TokenizerDownloader()
 downloader.set_config({"my_model": "https://huggingface.co/user/model/resolve/main/"})
@@ -175,7 +175,7 @@ If you have already downloaded a tokenizer but don't know the exact path, the li
 
 1. **Auto-detection**: The library will automatically search for tokenizers in common locations:
    ```python
-   from token_utils import TokenizationManager
+   from local_token_utils import TokenizationManager
 
    # Will automatically find and use the tokenizer
    manager = TokenizationManager("qwen")
@@ -183,7 +183,7 @@ If you have already downloaded a tokenizer but don't know the exact path, the li
 
 2. **Find available tokenizers**: Discover what tokenizers are available on your system:
    ```python
-   from token_utils import find_available_tokenizers
+   from local_token_utils import find_available_tokenizers
 
    available = find_available_tokenizers()
    print("Found tokenizers:", available)
@@ -318,8 +318,8 @@ for file in files:
     with open(tokenizer_dir / file, 'wb') as f:
         f.write(response.content)
 
-# Use with token-utils
-from token_utils import TokenizationManager
+# Use with local-token-utils
+from local_token_utils import TokenizationManager
 manager = TokenizationManager('gpt2', model_path=str(tokenizer_dir))
 tokens = manager.tokenize('Hello world!')
 print(f'Tokens: {tokens}')

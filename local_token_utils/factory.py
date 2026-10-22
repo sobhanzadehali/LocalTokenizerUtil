@@ -1,5 +1,5 @@
-from token_utils.registry import TokenizerRegistry
-from token_utils.downloader import TokenizerDownloader
+from local_token_utils.registry import TokenizerRegistry
+from local_token_utils.downloader import TokenizerDownloader
 import os
 
 

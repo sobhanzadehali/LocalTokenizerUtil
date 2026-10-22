@@ -1,6 +1,6 @@
 [project]
-name = "token-utils"
-version = "0.3.2"
+name = "local-token-utils"
+version = "1.0.0"
 authors = [
     { name = "sobhan", email = "sobhan@example.com" }
 ]
@@ -34,3 +34,8 @@ test = [
 [build-system]
 requires = ["hatchling >= 1.26"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+test = [
+    "pytest-cov>=7.1.0",
+]

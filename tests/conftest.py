@@ -2,7 +2,7 @@ import pytest
 import os
 import tempfile
 from pathlib import Path
-from token_utils import TokenizerDownloader, TokenizationManager
+from local_token_utils import TokenizerDownloader, TokenizationManager
 
 
 @pytest.fixture(scope="session")

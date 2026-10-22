@@ -1,7 +1,7 @@
 import pytest
 import os
 from pathlib import Path
-from token_utils import TokenizationManager, TokenizerDownloader, find_available_tokenizers
+from local_token_utils import TokenizationManager, TokenizerDownloader, find_available_tokenizers
 
 
 class TestTokenizationManager:
@@ -117,7 +117,7 @@ class TestMockTokenizers:
 
     def test_tokenizer_discovery(self, mock_tokenizers):
         """Test that tokenizers can be discovered."""
-        from token_utils import find_available_tokenizers
+        from local_token_utils import find_available_tokenizers
 
         # Find tokenizers in the mock directory
         mock_dir = str(Path(mock_tokenizers[list(mock_tokenizers.keys())[0]]).parent)

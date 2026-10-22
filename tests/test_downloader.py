@@ -2,7 +2,7 @@ import pytest
 import tempfile
 import os
 from pathlib import Path
-from token_utils import TokenizerDownloader
+from local_token_utils import TokenizerDownloader
 
 
 class TestDownloaderFunctionality:

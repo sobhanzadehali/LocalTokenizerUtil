@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Example: Using token-utils with real tokenizers
+Example: Using local-token-utils with real tokenizers
 
-This example demonstrates how to use the token-utils package
+This example demonstrates how to use the local-token-utils package
 with real tokenizers, including downloading and using them.
 """
 
 import os
-from token_utils import TokenizationManager, TokenizerDownloader, find_available_tokenizers
+from local_token_utils import TokenizationManager, TokenizerDownloader, find_available_tokenizers
 
 
 def example_download_and_use():
